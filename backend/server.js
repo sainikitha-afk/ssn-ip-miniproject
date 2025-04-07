@@ -87,8 +87,14 @@ app.post("/login", async (req, res) => {
 
 // Get all projects
 app.get("/projects", authenticateToken, (req, res) => {
-  const projects = readExcel("projects.xlsx");
-  res.json(projects);
+  const allProjects = readExcel("projects.xlsx");
+
+  // Only show projects created by the logged-in user
+  const userProjects = allProjects.filter(
+    (project) => project.createdBy === req.user.email
+  );
+
+  res.json(userProjects);
 });
 
 // Add a new project
